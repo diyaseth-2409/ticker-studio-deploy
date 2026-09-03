@@ -18,7 +18,7 @@ export function StartListicle() {
   }
 
   return (
-    <div className="mx-[20%] w-[60%] min-w-[720px] py-14">
+    <div className="mx-auto w-[92%] max-w-[1600px] py-14">
       <div className="mb-10 text-center">
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-[8px] bg-navy-900">
           <Radio size={22} className="text-white" strokeWidth={2.25} />
@@ -27,7 +27,7 @@ export function StartListicle() {
         <p className="mt-2 text-[14px] text-studio-muted">Pick a starting look — you can customize everything after.</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-4 gap-4">
         {PRESETS.map((p, i) => {
           const preview: Ticker = {
             id: 'p',
