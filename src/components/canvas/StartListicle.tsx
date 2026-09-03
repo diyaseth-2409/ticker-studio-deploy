@@ -27,8 +27,8 @@ export function StartListicle() {
         <p className="mt-2 text-[14px] text-studio-muted">Pick a starting look — you can customize everything after.</p>
       </div>
 
-      <div className="flex flex-col divide-y divide-studio-border border-y border-studio-border">
-        {PRESETS.map((p) => {
+      <div className="grid grid-cols-2 gap-3">
+        {PRESETS.map((p, i) => {
           const preview: Ticker = {
             id: 'p',
             kind: 'ticker',
@@ -52,21 +52,22 @@ export function StartListicle() {
             <button
               key={p.id}
               onClick={() => setPreset(p.id)}
-              className="group flex items-center gap-6 px-3 py-4 text-left transition-colors hover:bg-studio-panel"
+              className="group flex items-center gap-4 rounded-[7px] border border-studio-border p-3 text-left transition-colors hover:border-accent-400 hover:bg-accent-50/30"
             >
-              <span className="w-6 shrink-0 font-mono text-[11px] text-studio-muted/60">
-                {String(PRESETS.indexOf(p) + 1).padStart(2, '0')}
+              <span className="w-5 shrink-0 font-mono text-[11px] text-studio-muted/60">
+                {String(i + 1).padStart(2, '0')}
               </span>
-              <div className="w-56 shrink-0 overflow-hidden rounded-[5px] bg-navy-900">
-                <TickerRender ticker={preview} scale={0.46} />
+              <div className="w-40 shrink-0 overflow-hidden rounded-[5px] bg-navy-900">
+                <TickerRender ticker={preview} scale={0.36} />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-[15px] font-medium text-studio-ink">{p.label}</p>
-                <p className="mt-0.5 truncate text-[12.5px] text-studio-muted">{p.description}</p>
+                <p className="text-[14px] font-medium text-studio-ink">{p.label}</p>
+                <p className="mt-0.5 truncate text-[12px] text-studio-muted">{p.description}</p>
               </div>
-              <span className="flex shrink-0 items-center gap-1.5 text-[12px] font-medium text-studio-muted/0 transition-colors group-hover:text-accent-600">
-                Select <ArrowRight size={14} />
-              </span>
+              <ArrowRight
+                size={14}
+                className="shrink-0 text-studio-muted/0 transition-colors group-hover:text-accent-600"
+              />
             </button>
           )
         })}
