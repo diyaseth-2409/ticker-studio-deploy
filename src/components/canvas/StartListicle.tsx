@@ -18,12 +18,12 @@ export function StartListicle() {
   }
 
   return (
-    <div className="mx-auto w-[92%] max-w-[1600px] py-14">
-      <div className="mb-9 text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-[8px] bg-navy-900 shadow-[0_2px_6px_-1px_rgba(11,18,32,0.35)]">
-          <Radio size={22} className="text-white" strokeWidth={2.25} />
+    <div className="mx-auto w-[92%] max-w-[1600px] py-8">
+      <div className="mb-5 flex items-center justify-center gap-2.5">
+        <div className="flex h-6 w-6 items-center justify-center rounded-[5px] bg-navy-900">
+          <Radio size={12} className="text-white" strokeWidth={2.25} />
         </div>
-        <h1 className="text-[26px] font-semibold tracking-tight text-studio-ink">Choose a ticker style</h1>
+        <h1 className="text-[16px] font-semibold tracking-tight text-studio-ink">Choose a ticker style</h1>
       </div>
 
       <div className="grid grid-cols-4 gap-5">
