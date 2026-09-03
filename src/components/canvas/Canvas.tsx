@@ -17,7 +17,7 @@ export function Canvas() {
 
   if (tickers.length === 0) {
     return (
-      <div className="flex min-w-0 flex-1 flex-col overflow-y-auto bg-white px-10">
+      <div className="flex min-w-0 flex-1 flex-col overflow-y-auto bg-white">
         <StartListicle />
       </div>
     )
