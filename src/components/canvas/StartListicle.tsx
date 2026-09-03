@@ -56,17 +56,14 @@ export function StartListicle() {
               <div className="mb-2.5 w-full overflow-hidden rounded-[5px] bg-navy-900">
                 <TickerRender ticker={preview} scale={0.4} />
               </div>
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <p className="flex items-center gap-1.5 text-[13.5px] font-medium text-studio-ink">
-                    <span className="font-mono text-[10.5px] text-studio-muted/60">{String(i + 1).padStart(2, '0')}</span>
-                    {p.label}
-                  </p>
-                  <p className="mt-0.5 truncate text-[11.5px] text-studio-muted">{p.description}</p>
-                </div>
+              <div className="flex items-center justify-between gap-2">
+                <p className="flex items-center gap-1.5 text-[13.5px] font-medium text-studio-ink">
+                  <span className="font-mono text-[10.5px] text-studio-muted/60">{String(i + 1).padStart(2, '0')}</span>
+                  {p.label}
+                </p>
                 <ArrowRight
                   size={13}
-                  className="mt-0.5 shrink-0 text-studio-muted/0 transition-colors group-hover:text-accent-600"
+                  className="shrink-0 text-studio-muted/0 transition-colors group-hover:text-accent-600"
                 />
               </div>
             </button>
