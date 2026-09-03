@@ -12,7 +12,7 @@ export default function App() {
     <div className="flex h-screen w-screen flex-col overflow-hidden bg-studio-panel">
       <TopNav />
       <div className="flex min-h-0 flex-1">
-        <LeftSidebar />
+        {hasTickers && <LeftSidebar />}
         <Canvas />
         {hasTickers && <RightSidebar />}
       </div>
