@@ -19,14 +19,14 @@ export function StartListicle() {
 
   return (
     <div className="mx-auto w-[92%] max-w-[1600px] py-14">
-      <div className="mb-8 text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-[8px] bg-navy-900">
+      <div className="mb-9 text-center">
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-[8px] bg-navy-900 shadow-[0_2px_6px_-1px_rgba(11,18,32,0.35)]">
           <Radio size={22} className="text-white" strokeWidth={2.25} />
         </div>
         <h1 className="text-[26px] font-semibold tracking-tight text-studio-ink">Choose a ticker style</h1>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 gap-5">
         {PRESETS.map((p, i) => {
           const preview: Ticker = {
             id: 'p',
@@ -51,19 +51,21 @@ export function StartListicle() {
             <button
               key={p.id}
               onClick={() => setPreset(p.id)}
-              className="group flex flex-col rounded-[7px] border border-studio-border p-2.5 text-left transition-colors hover:border-accent-400 hover:bg-accent-50/30"
+              className="group flex flex-col rounded-[8px] border border-studio-border bg-white p-2.5 text-left shadow-[0_1px_2px_rgba(16,24,40,0.04)] transition-all duration-150 hover:-translate-y-0.5 hover:border-accent-400 hover:shadow-[0_8px_20px_-6px_rgba(16,24,40,0.12)]"
             >
-              <div className="mb-2 w-full overflow-hidden rounded-[5px] bg-navy-900">
+              <div className="relative mb-2.5 w-full overflow-hidden rounded-[5px] bg-navy-900 [&_*]:![animation-play-state:paused] group-hover:[&_*]:![animation-play-state:running]">
                 <TickerRender ticker={preview} scale={0.62} />
               </div>
-              <div className="flex items-center justify-between gap-2">
-                <p className="flex items-center gap-1.5 text-[11.5px] font-normal text-studio-muted">
-                  <span className="font-mono text-[10px] text-studio-muted/50">{String(i + 1).padStart(2, '0')}</span>
+              <div className="flex items-center justify-between gap-2 px-0.5">
+                <p className="flex items-center gap-1.5 text-[12px] font-medium text-studio-ink-soft">
+                  <span className="flex h-4 w-4 items-center justify-center rounded-[3px] bg-studio-panel font-mono text-[9.5px] text-studio-muted">
+                    {i + 1}
+                  </span>
                   {p.label}
                 </p>
                 <ArrowRight
                   size={12}
-                  className="shrink-0 text-studio-muted/0 transition-colors group-hover:text-accent-600"
+                  className="shrink-0 -translate-x-1 text-studio-muted/0 transition-all duration-150 group-hover:translate-x-0 group-hover:text-accent-600"
                 />
               </div>
             </button>
