@@ -66,7 +66,7 @@ export function AddTickerModal() {
 
         <div className="flex-1 overflow-y-auto p-5">
           {step === 0 && (
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="flex flex-col gap-2">
               {PRESETS.map((p) => {
                 const preview: Ticker = {
                   id: 'p',
@@ -92,15 +92,22 @@ export function AddTickerModal() {
                   <button
                     key={p.id}
                     onClick={() => setPreset(p.id)}
-                    className={`rounded-[6px] border p-2 text-left transition-colors ${
-                      active ? 'border-accent-500 ring-1 ring-accent-100' : 'border-studio-border hover:border-studio-border-strong'
+                    className={`flex items-center gap-3 rounded-[6px] border p-2 text-left transition-colors ${
+                      active ? 'border-accent-500 bg-accent-50/60 ring-1 ring-accent-100' : 'border-studio-border hover:border-studio-border-strong'
                     }`}
                   >
-                    <div className="overflow-hidden rounded-[3px] bg-navy-900">
-                      <TickerRender ticker={preview} scale={0.42} />
+                    <div className="w-32 shrink-0 overflow-hidden rounded-[3px] bg-navy-900">
+                      <TickerRender ticker={preview} scale={0.34} />
                     </div>
-                    <p className={`mt-1.5 text-[12px] font-medium ${active ? 'text-accent-700' : 'text-studio-ink'}`}>{p.label}</p>
-                    <p className="text-[10.5px] text-studio-muted">{p.description}</p>
+                    <div className="min-w-0 flex-1">
+                      <p className={`text-[12.5px] font-medium ${active ? 'text-accent-700' : 'text-studio-ink'}`}>{p.label}</p>
+                      <p className="truncate text-[11px] text-studio-muted">{p.description}</p>
+                    </div>
+                    {active && (
+                      <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-accent-600 text-white">
+                        <Check size={10} />
+                      </span>
+                    )}
                   </button>
                 )
               })}

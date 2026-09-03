@@ -1,8 +1,9 @@
 import { useRef } from 'react'
-import { Radio, Plus } from 'lucide-react'
+import { Radio } from 'lucide-react'
 import { useStudioStore } from '@/store/useStudioStore'
 import { TickerLayer } from '@/components/canvas/TickerLayer'
 import { CanvasToolbar } from '@/components/canvas/CanvasToolbar'
+import { StartListicle } from '@/components/canvas/StartListicle'
 
 export function Canvas() {
   const tickers = useStudioStore((s) => s.tickers)
@@ -10,10 +11,17 @@ export function Canvas() {
   const showGuides = useStudioStore((s) => s.showGuides)
   const activeGuides = useStudioStore((s) => s.activeGuides)
   const selectTicker = useStudioStore((s) => s.selectTicker)
-  const toggleAddModal = useStudioStore((s) => s.toggleAddModal)
   const canvasRef = useRef<HTMLDivElement>(null)
 
   const ordered = [...tickers].sort((a, b) => a.zIndex - b.zIndex)
+
+  if (tickers.length === 0) {
+    return (
+      <div className="flex min-w-0 flex-1 flex-col overflow-y-auto bg-studio-panel px-8">
+        <StartListicle />
+      </div>
+    )
+  }
 
   return (
     <div className="flex min-w-0 flex-1 flex-col bg-studio-panel">
@@ -57,24 +65,6 @@ export function Canvas() {
             {ordered.map((t) => (
               <TickerLayer key={t.id} ticker={t} canvasRef={canvasRef} />
             ))}
-
-            {tickers.length === 0 && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center">
-                <div className="flex h-11 w-11 items-center justify-center rounded-[7px] border border-white/10 bg-white/5">
-                  <Radio size={18} className="text-white/40" />
-                </div>
-                <div>
-                  <p className="text-[14px] font-semibold text-white/85">No tickers added</p>
-                  <p className="mt-1 text-[12.5px] text-white/45">Create your first ticker to get started.</p>
-                </div>
-                <button
-                  onClick={() => toggleAddModal(true)}
-                  className="mt-1 flex items-center gap-1.5 rounded-[5px] bg-accent-600 px-3.5 py-1.5 text-[12.5px] font-semibold text-white transition-colors hover:bg-accent-700"
-                >
-                  <Plus size={13} strokeWidth={2.5} /> Add Ticker
-                </button>
-              </div>
-            )}
           </div>
         </div>
       </div>
