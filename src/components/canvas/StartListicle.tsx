@@ -1,21 +1,16 @@
-import { useState } from 'react'
-import { Radio, Type as TypeIcon, Rss, ArrowRight } from 'lucide-react'
+import { Radio, ArrowRight } from 'lucide-react'
 import { PRESETS } from '@/data/presets'
 import { useStudioStore } from '@/store/useStudioStore'
-import type { ContentSourceType, PresetId, Ticker } from '@/types/ticker'
+import type { PresetId, Ticker } from '@/types/ticker'
 import { TickerRender } from '@/components/TickerRender'
 
 // The very first thing a first-time user sees: no forms, no empty canvas —
-// just "pick a ticker style" as a listicle. Selecting a row immediately
-// advances to a lightweight content-source choice, then creates the ticker
-// and drops the user straight into the canvas.
+// just "pick a ticker style" as a listicle. Selecting a preset creates the
+// ticker immediately (defaulting to Custom Text content) and drops the user
+// straight into the canvas — content source is chosen there, in the right
+// panel, so it isn't asked twice.
 export function StartListicle() {
   const addTicker = useStudioStore((s) => s.addTicker)
-  const [preset, setPreset] = useState<PresetId | null>(null)
-
-  if (preset) {
-    return <ContentStep preset={preset} onBack={() => setPreset(null)} onCreate={(source) => addTicker(presetLabel(preset), preset, source)} />
-  }
 
   return (
     <div className="mx-auto w-[92%] max-w-[1600px] py-8">
@@ -50,7 +45,7 @@ export function StartListicle() {
           return (
             <button
               key={p.id}
-              onClick={() => setPreset(p.id)}
+              onClick={() => addTicker(p.label, p.id as PresetId, 'custom')}
               className="group flex flex-col rounded-[8px] border border-studio-border bg-white p-2.5 text-left shadow-[0_1px_2px_rgba(16,24,40,0.04)] transition-all duration-150 hover:-translate-y-0.5 hover:border-accent-400 hover:shadow-[0_8px_20px_-6px_rgba(16,24,40,0.12)]"
             >
               <div className="relative mb-2.5 w-full overflow-hidden rounded-[5px] bg-navy-900 [&_*]:![animation-play-state:paused] group-hover:[&_*]:![animation-play-state:running]">
@@ -74,54 +69,4 @@ export function StartListicle() {
       </div>
     </div>
   )
-}
-
-function ContentStep({
-  preset,
-  onBack,
-  onCreate,
-}: {
-  preset: PresetId
-  onBack: () => void
-  onCreate: (source: ContentSourceType) => void
-}) {
-  return (
-    <div className="mx-auto flex h-full w-full max-w-2xl flex-col justify-center py-14">
-      <div className="mb-6 text-center">
-        <p className="mb-1 text-[11.5px] font-medium text-studio-muted">{presetLabel(preset)} selected</p>
-        <h1 className="text-[19px] font-semibold text-studio-ink">How will this ticker get its content?</h1>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          onClick={() => onCreate('custom')}
-          className="rounded-[7px] border border-studio-border bg-white p-5 text-left transition-colors hover:border-accent-400 hover:bg-accent-50/40"
-        >
-          <TypeIcon size={20} className="text-accent-600" />
-          <p className="mt-3 text-[13.5px] font-semibold text-studio-ink">Custom Text</p>
-          <p className="mt-1 text-[11.5px] leading-relaxed text-studio-muted">
-            Write and manage your own list of ticker messages.
-          </p>
-        </button>
-        <button
-          onClick={() => onCreate('rss')}
-          className="rounded-[7px] border border-studio-border bg-white p-5 text-left transition-colors hover:border-accent-400 hover:bg-accent-50/40"
-        >
-          <Rss size={20} className="text-accent-600" />
-          <p className="mt-3 text-[13.5px] font-semibold text-studio-ink">RSS Feed</p>
-          <p className="mt-1 text-[11.5px] leading-relaxed text-studio-muted">
-            Pull headlines automatically from one RSS source.
-          </p>
-        </button>
-      </div>
-
-      <button onClick={onBack} className="mx-auto mt-5 text-[12px] font-medium text-studio-muted hover:text-studio-ink-soft">
-        ← Back to styles
-      </button>
-    </div>
-  )
-}
-
-function presetLabel(id: PresetId) {
-  return PRESETS.find((p) => p.id === id)?.label ?? 'Ticker'
 }
