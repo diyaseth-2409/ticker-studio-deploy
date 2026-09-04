@@ -1,6 +1,17 @@
 import { nanoid } from 'nanoid'
 import type { RssItem } from '@/types/ticker'
 
+// Common feed sources offered as quick picks — selecting one just fills the
+// URL field, the actual fetch still goes through fetchRssFeed below.
+export const PRESET_RSS_FEEDS: { label: string; url: string }[] = [
+  { label: 'BBC News — Top Stories', url: 'https://feeds.bbci.co.uk/news/rss.xml' },
+  { label: 'Reuters — World News', url: 'https://www.reutersagency.com/feed/?best-topics=world' },
+  { label: 'ESPN — Top Headlines', url: 'https://www.espn.com/espn/rss/news' },
+  { label: 'Economic Times — Markets', url: 'https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms' },
+  { label: 'PTI — National News', url: 'https://www.ptinews.com/rss/national.xml' },
+  { label: 'Al Jazeera — All News', url: 'https://www.aljazeera.com/xml/rss/all.xml' },
+]
+
 // Mock RSS fetch. Structured to mirror a real fetch signature so a live
 // backend (e.g. GET /api/rss?url=...) can swap in without touching callers.
 export async function fetchRssFeed(url: string): Promise<RssItem[]> {

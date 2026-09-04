@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { GripVertical, Plus, Trash2, Rss, Type as TypeIcon, RefreshCw } from 'lucide-react'
 import type { Ticker } from '@/types/ticker'
 import { useStudioStore } from '@/store/useStudioStore'
-import { Field, TextInput, SegmentedControl } from '@/components/ui/Field'
+import { Field, TextInput, SegmentedControl, SelectInput } from '@/components/ui/Field'
+import { PRESET_RSS_FEEDS } from '@/data/mockRss'
 
 export function ContentSourcePanel({ ticker }: { ticker: Ticker }) {
   const setContentSource = useStudioStore((s) => s.setContentSource)
@@ -90,6 +91,22 @@ function RssEditor({ ticker }: { ticker: Ticker }) {
 
   return (
     <div className="mt-3">
+      <Field label="Preset Feeds" hint="Optional">
+        <SelectInput
+          value=""
+          onChange={(e) => {
+            if (e.target.value) setRssUrl(ticker.id, e.target.value)
+          }}
+        >
+          <option value="">Choose a source…</option>
+          {PRESET_RSS_FEEDS.map((f) => (
+            <option key={f.url} value={f.url}>
+              {f.label}
+            </option>
+          ))}
+        </SelectInput>
+      </Field>
+
       <Field label="RSS Feed URL" hint="One feed per ticker">
         <div className="flex gap-1.5">
           <TextInput
