@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react'
-import { Move, Copy, EyeOff, Lock, Unlock, Trash2 } from 'lucide-react'
+import { Move, EyeOff, Lock, Unlock, Trash2 } from 'lucide-react'
 import type { Ticker } from '@/types/ticker'
 import { useStudioStore } from '@/store/useStudioStore'
 import { TickerRender } from '@/components/TickerRender'
@@ -20,7 +20,6 @@ export function TickerLayer({
   const selectTicker = useStudioStore((s) => s.selectTicker)
   const updatePosition = useStudioStore((s) => s.updatePosition)
   const updateSize = useStudioStore((s) => s.updateSize)
-  const duplicateTicker = useStudioStore((s) => s.duplicateTicker)
   const toggleVisible = useStudioStore((s) => s.toggleVisible)
   const toggleLocked = useStudioStore((s) => s.toggleLocked)
   const deleteTicker = useStudioStore((s) => s.deleteTicker)
@@ -161,7 +160,6 @@ export function TickerLayer({
             <div className="flex h-6 w-6 items-center justify-center text-studio-muted">
               <Move size={12} />
             </div>
-            <IconButton size="sm" icon={<Copy size={12} />} label="Duplicate" onClick={() => duplicateTicker(ticker.id)} />
             <IconButton size="sm" icon={<EyeOff size={12} />} label="Hide" onClick={() => toggleVisible(ticker.id)} />
             <IconButton
               size="sm"

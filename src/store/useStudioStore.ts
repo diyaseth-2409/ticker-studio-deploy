@@ -29,19 +29,16 @@ interface StudioState {
   showGuides: boolean
   snapToGuides: boolean
   activeGuides: { x: number | null; y: number | null }
-  isAddModalOpen: boolean
 
   past: HistoryEntry[]
   future: HistoryEntry[]
 
-  // selection / lifecycle
+  // selection / lifecycle — single ticker only, addTicker replaces any existing one
   selectTicker: (id: string | null) => void
   addTicker: (name: string, preset: PresetId, source: ContentSourceType) => void
   deleteTicker: (id: string) => void
-  duplicateTicker: (id: string) => void
   toggleVisible: (id: string) => void
   toggleLocked: (id: string) => void
-  reorderTickers: (fromId: string, toId: string) => void
 
   // canvas transform
   updatePosition: (id: string, position: Position, commit?: boolean) => void
@@ -69,7 +66,6 @@ interface StudioState {
   setZoom: (z: number) => void
   toggleGuides: () => void
   toggleSnap: () => void
-  toggleAddModal: (open: boolean) => void
 
   // history
   pushHistory: () => void
@@ -96,7 +92,6 @@ export const useStudioStore = create<StudioState>((set, get) => ({
   showGuides: true,
   snapToGuides: true,
   activeGuides: { x: null, y: null },
-  isAddModalOpen: false,
   past: [],
   future: [],
 
@@ -104,17 +99,16 @@ export const useStudioStore = create<StudioState>((set, get) => ({
 
   addTicker: (name, preset, source) => {
     get().pushHistory()
-    const t = createTicker({ name, preset, index: get().tickers.length })
+    const t = createTicker({ name, preset })
     t.contentSource = source
     if (source === 'rss') {
       t.rssFeed = { url: '', items: [], fields: { headline: true, source: true, date: false } }
     }
-    set((s) => ({
-      tickers: [...s.tickers, t],
+    set({
+      tickers: [t],
       selectedId: t.id,
       saveState: 'unsaved',
-      isAddModalOpen: false,
-    }))
+    })
   },
 
   deleteTicker: (id) => {
@@ -124,25 +118,6 @@ export const useStudioStore = create<StudioState>((set, get) => ({
       selectedId: s.selectedId === id ? null : s.selectedId,
       saveState: 'unsaved',
     }))
-  },
-
-  duplicateTicker: (id) => {
-    get().pushHistory()
-    set((s) => {
-      const src = s.tickers.find((t) => t.id === id)
-      if (!src) return s
-      const copy: Ticker = {
-        ...src,
-        id: nanoid(8),
-        name: `${src.name} Copy`,
-        position: { x: Math.min(90, src.position.x + 3), y: Math.min(90, src.position.y + 3) },
-        zIndex: s.tickers.length + 1,
-        customItems: src.customItems.map((i) => ({ ...i, id: nanoid(6) })),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }
-      return { tickers: [...s.tickers, copy], selectedId: copy.id, saveState: 'unsaved' }
-    })
   },
 
   toggleVisible: (id) =>
@@ -156,19 +131,6 @@ export const useStudioStore = create<StudioState>((set, get) => ({
       tickers: s.tickers.map((t) => (t.id === id ? touch({ ...t, locked: !t.locked }) : t)),
       saveState: 'unsaved',
     })),
-
-  reorderTickers: (fromId, toId) => {
-    set((s) => {
-      const list = [...s.tickers]
-      const fromIdx = list.findIndex((t) => t.id === fromId)
-      const toIdx = list.findIndex((t) => t.id === toId)
-      if (fromIdx === -1 || toIdx === -1) return s
-      const [moved] = list.splice(fromIdx, 1)
-      list.splice(toIdx, 0, moved)
-      const reindexed = list.map((t, i) => ({ ...t, zIndex: i + 1 }))
-      return { tickers: reindexed, saveState: 'unsaved' }
-    })
-  },
 
   updatePosition: (id, position, commit) => {
     if (commit) get().pushHistory()
@@ -336,7 +298,6 @@ export const useStudioStore = create<StudioState>((set, get) => ({
   setZoom: (z) => set({ zoom: Math.min(200, Math.max(25, z)) }),
   toggleGuides: () => set((s) => ({ showGuides: !s.showGuides })),
   toggleSnap: () => set((s) => ({ snapToGuides: !s.snapToGuides })),
-  toggleAddModal: (open) => set({ isAddModalOpen: open }),
 
   pushHistory: () => {
     const { tickers, past } = get()

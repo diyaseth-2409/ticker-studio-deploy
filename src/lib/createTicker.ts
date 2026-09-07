@@ -2,8 +2,6 @@ import { nanoid } from 'nanoid'
 import type { PresetId, Ticker } from '@/types/ticker'
 import { getPreset } from '@/data/presets'
 
-let placementCounter = 0
-
 const DEFAULT_ITEMS = [
   'Breaking news: Parliament session begins today',
   'Delhi records heavy rainfall',
@@ -11,16 +9,9 @@ const DEFAULT_ITEMS = [
   'Team India announces squad',
 ]
 
-export function createTicker(opts: {
-  name: string
-  preset: PresetId
-  index: number
-}): Ticker {
+export function createTicker(opts: { name: string; preset: PresetId }): Ticker {
   const preset = getPreset(opts.preset)
   const now = new Date().toISOString()
-  // Stagger default placement so stacked tickers don't fully overlap.
-  const slot = placementCounter++
-  const y = 78 - (slot % 4) * 16
 
   return {
     id: nanoid(8),
@@ -33,9 +24,9 @@ export function createTicker(opts: {
     appearance: { ...preset.appearance },
     typography: { ...preset.typography },
     animation: { ...preset.animation },
-    position: { x: 4, y: Math.max(4, y) },
+    position: { x: 4, y: 78 },
     size: { width: 92, height: preset.appearance.height },
-    zIndex: opts.index + 1,
+    zIndex: 1,
     visible: true,
     locked: false,
     createdAt: now,
