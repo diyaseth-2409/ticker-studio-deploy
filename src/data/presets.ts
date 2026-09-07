@@ -30,6 +30,7 @@ export const PRESETS: PresetDef[] = [
     label: 'Breaking News',
     description: 'High-urgency red accent, bold crawl',
     appearance: {
+      layout: 'double',
       background: 'solid',
       backgroundColor: '#0f172a',
       gradientFrom: '#7f1d1d',
@@ -50,6 +51,7 @@ export const PRESETS: PresetDef[] = [
     label: 'News Crawl',
     description: 'Classic broadcast navy crawl bar',
     appearance: {
+      layout: 'single',
       background: 'solid',
       backgroundColor: '#111827',
       gradientFrom: '#1e3a8a',
@@ -70,6 +72,7 @@ export const PRESETS: PresetDef[] = [
     label: 'Sports',
     description: 'Energetic green/dark scoreboard style',
     appearance: {
+      layout: 'single',
       background: 'gradient',
       backgroundColor: '#052e16',
       gradientFrom: '#166534',
@@ -90,6 +93,7 @@ export const PRESETS: PresetDef[] = [
     label: 'Business',
     description: 'Muted grey, editorial, data-forward',
     appearance: {
+      layout: 'single',
       background: 'solid',
       backgroundColor: '#1f2937',
       gradientFrom: '#374151',
@@ -110,6 +114,7 @@ export const PRESETS: PresetDef[] = [
     label: 'Weather',
     description: 'Cool blue gradient, light text',
     appearance: {
+      layout: 'single',
       background: 'gradient',
       backgroundColor: '#0c4a6e',
       gradientFrom: '#0284c7',
@@ -130,6 +135,7 @@ export const PRESETS: PresetDef[] = [
     label: 'Election',
     description: 'Bold red/blue civic contrast',
     appearance: {
+      layout: 'single',
       background: 'solid',
       backgroundColor: '#1e1b4b',
       gradientFrom: '#312e81',
@@ -150,6 +156,7 @@ export const PRESETS: PresetDef[] = [
     label: 'Minimal',
     description: 'Understated light bar, subtle motion',
     appearance: {
+      layout: 'single',
       background: 'solid',
       backgroundColor: '#ffffff',
       gradientFrom: '#f8fafc',
@@ -170,6 +177,7 @@ export const PRESETS: PresetDef[] = [
     label: 'Lower Third Crawl',
     description: 'Compact strip meant for lower-third placement',
     appearance: {
+      layout: 'single',
       background: 'gradient',
       backgroundColor: '#0f172a',
       gradientFrom: '#0f172acc',
@@ -190,6 +198,7 @@ export const PRESETS: PresetDef[] = [
     label: 'Alert',
     description: 'High-contrast amber alert banner',
     appearance: {
+      layout: 'single',
       background: 'solid',
       backgroundColor: '#78350f',
       gradientFrom: '#f59e0b',
@@ -210,6 +219,7 @@ export const PRESETS: PresetDef[] = [
     label: 'Custom',
     description: 'Start blank and design your own',
     appearance: {
+      layout: 'single',
       background: 'solid',
       backgroundColor: '#18181b',
       gradientFrom: '#27272a',

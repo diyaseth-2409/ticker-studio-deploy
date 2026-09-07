@@ -38,8 +38,10 @@ export type BackgroundMode = 'solid' | 'transparent' | 'gradient'
 export type ShapeMode = 'rectangle' | 'rounded'
 export type TextAlign = 'left' | 'center' | 'right'
 export type FontWeight = '400' | '500' | '600' | '700' | '800'
+export type LayoutMode = 'single' | 'double'
 
 export interface Appearance {
+  layout: LayoutMode
   background: BackgroundMode
   backgroundColor: string
   gradientFrom: string
@@ -50,7 +52,7 @@ export interface Appearance {
   shape: ShapeMode
   padding: number // px
   gap: number // px between items
-  height: number // px, ticker bar height
+  height: number // px, crawl row height (single row height, or bottom row height in double)
 }
 
 export interface Typography {

@@ -20,6 +20,19 @@ export function AppearancePanel({ ticker }: { ticker: Ticker }) {
 
   return (
     <div>
+      <Field label="Layout" hint="Rows">
+        <SegmentedControl
+          value={a.layout}
+          onChange={(v) => updateAppearance(ticker.id, { layout: v })}
+          options={[
+            { value: 'single', label: 'Single Ticker' },
+            { value: 'double', label: 'Double Ticker' },
+          ]}
+        />
+      </Field>
+
+      <div className="my-4 h-px bg-studio-border" />
+
       <Field label="Background">
         <SegmentedControl
           value={a.background}
