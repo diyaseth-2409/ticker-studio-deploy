@@ -37,44 +37,58 @@ export function TickerRender({ ticker, scale = 1 }: { ticker: Ticker; scale?: nu
 
   const radius = appearance.shape === 'rounded' ? 6 * scale : 0
 
+  const tagWidth = Math.max(28, 44 * scale)
+
   return (
     <div
-      className="relative w-full overflow-hidden"
+      className="relative flex w-full overflow-hidden"
       style={{
         height: appearance.height * scale,
         background,
         opacity: appearance.opacity / 100,
         borderRadius: radius,
-        borderLeft: `${Math.max(2, 3 * scale)}px solid ${appearance.accentColor}`,
       }}
     >
+      {/* accent tag — the clearest place the accent color reads at a glance */}
       <div
-        className="absolute inset-y-0 flex items-center whitespace-nowrap will-change-transform"
-        style={{
-          animation: `${animName}-${animDir} ${durationSec}s linear infinite`,
-          animationPlayState: 'running',
-          paddingLeft: appearance.padding * scale,
-        }}
+        className="relative z-10 flex shrink-0 items-center justify-center"
+        style={{ width: tagWidth, background: appearance.accentColor }}
       >
-        {[0, 1].map((dupe) => (
-          <div key={dupe} className="flex items-center" style={{ gap: appearance.gap * scale }}>
-            {items.map((text, i) => (
-              <span
-                key={`${dupe}-${i}`}
-                style={{
-                  color: appearance.textColor,
-                  fontFamily: typography.fontFamily,
-                  fontSize: Math.max(8, typography.fontSize * scale),
-                  fontWeight: Number(typography.fontWeight),
-                  letterSpacing: typography.letterSpacing * scale,
-                  marginRight: appearance.gap * scale,
-                }}
-              >
-                {text}
-              </span>
-            ))}
-          </div>
-        ))}
+        <span
+          className="h-[40%] w-[2px] rounded-full"
+          style={{ background: appearance.textColor, opacity: 0.65 }}
+        />
+      </div>
+
+      <div className="relative flex-1 overflow-hidden">
+        <div
+          className="absolute inset-y-0 flex items-center whitespace-nowrap will-change-transform"
+          style={{
+            animation: `${animName}-${animDir} ${durationSec}s linear infinite`,
+            animationPlayState: 'running',
+            paddingLeft: appearance.padding * scale,
+          }}
+        >
+          {[0, 1].map((dupe) => (
+            <div key={dupe} className="flex items-center" style={{ gap: appearance.gap * scale }}>
+              {items.map((text, i) => (
+                <span
+                  key={`${dupe}-${i}`}
+                  style={{
+                    color: appearance.textColor,
+                    fontFamily: typography.fontFamily,
+                    fontSize: Math.max(8, typography.fontSize * scale),
+                    fontWeight: Number(typography.fontWeight),
+                    letterSpacing: typography.letterSpacing * scale,
+                    marginRight: appearance.gap * scale,
+                  }}
+                >
+                  {text}
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )
