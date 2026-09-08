@@ -38,7 +38,14 @@ export type BackgroundMode = 'solid' | 'transparent' | 'gradient'
 export type ShapeMode = 'rectangle' | 'rounded'
 export type TextAlign = 'left' | 'center' | 'right'
 export type FontWeight = '400' | '500' | '600' | '700' | '800'
-export type LayoutMode = 'single' | 'double'
+// 'double-bold' is the Aajtak-style headline strip: big centered bold
+// headline on top (background), a red "Watch" CTA box on the right of the
+// crawl row below.
+// 'double-abp' is the ABP-style strip: white top row (logo + accent bar on
+// the left, big bold left-aligned headline, a two-tone "BREAKING NEWS" tag
+// on the right) over a black crawl row with a "TOP NEWS" tag + time box on
+// the left.
+export type LayoutMode = 'single' | 'double' | 'double-bold' | 'double-abp'
 
 export interface Appearance {
   layout: LayoutMode
@@ -53,6 +60,12 @@ export interface Appearance {
   padding: number // px
   gap: number // px between items
   height: number // px, crawl row height (single row height, or bottom row height in double)
+  // Top-strip-only color overrides for double/double-bold/double-abp
+  // layouts — null falls back to accentColor/textColor (or, for double-abp,
+  // the layout's own white/dark defaults) so existing tickers render
+  // unchanged.
+  headlineBackgroundColor: string | null
+  headlineTextColor: string | null
 }
 
 export interface Typography {
@@ -65,12 +78,28 @@ export interface Typography {
 
 export type AnimationDirection = 'ltr' | 'rtl'
 export type AnimationStyle = 'crawl' | 'smooth' | 'step'
+export type CycleTransition = 'fade' | 'slide' | 'none'
+// Crawl row mode: 'scroll' is the classic continuous marquee (direction,
+// speed, style below); 'swap' shows one item at a time, holding each for
+// crawlCycleSec before transitioning to the next — same discrete-swap
+// behavior as the headline strip.
+export type CrawlMode = 'scroll' | 'swap'
 
 export interface AnimationConfig {
   direction: AnimationDirection
   speed: number // 1-100
   style: AnimationStyle
   pauseOnHover: boolean
+  // Headline strip (top row on double/double-bold/double-abp layouts):
+  // seconds each item holds before swapping to the next, and how it swaps.
+  headlineCycleSec: number
+  headlineTransition: CycleTransition
+  // Crawl row (bottom row / single-layout row): scroll is the default
+  // marquee; swap turns it into a discrete one-item-at-a-time cycle using
+  // crawlCycleSec/crawlTransition instead of direction/speed/style.
+  crawlMode: CrawlMode
+  crawlCycleSec: number
+  crawlTransition: CycleTransition
 }
 
 export interface Position {
@@ -93,6 +122,12 @@ export type PresetId =
   | 'minimal'
   | 'lower-third-crawl'
   | 'alert'
+  | 'breaking-news-bold'
+  | 'breaking-news-abp'
+  | 'flash-red'
+  | 'red-white'
+  | 'crimson-alert'
+  | 'breaking-white'
   | 'custom'
 
 export interface Ticker {
@@ -103,6 +138,24 @@ export interface Ticker {
   contentSource: ContentSourceType
   customItems: CustomItem[]
   rssFeed: RssFeedConfig | null
+  // Top headline-strip content for double/double-bold/double-abp layouts,
+  // edited independently from the crawl row below. Mirrors the crawl row's
+  // own contentSource/customItems/rssFeed: 'custom' cycles headlineItems,
+  // 'rss' cycles headlineRssFeed.items. Both empty falls back to cycling
+  // through the crawl row's own items (legacy behavior).
+  headlineContentSource: ContentSourceType
+  headlineItems: CustomItem[]
+  headlineRssFeed: RssFeedConfig | null
+  // Badge labels for double/double-bold/double-abp layouts — the small tag on
+  // the top strip (e.g. "Live", "Breaking News") and on the crawl row below
+  // (e.g. "Watch More", "Top News"). null/empty falls back to each preset's
+  // default label.
+  topBadgeText: string | null
+  bottomBadgeText: string | null
+  // Top-strip-only typography overrides for double/double-bold/double-abp
+  // layouts — each field is independently optional; unset fields fall back
+  // to the shared `typography` below, so existing tickers render unchanged.
+  headlineTypography: Partial<Typography>
   appearance: Appearance
   typography: Typography
   animation: AnimationConfig

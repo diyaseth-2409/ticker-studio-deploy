@@ -157,6 +157,26 @@ input[type='color']::-webkit-color-swatch {
   animation: fade-in-scale 0.14s ease-out;
 }
 
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 @keyframes select-outline-in {
   from {
     opacity: 0;

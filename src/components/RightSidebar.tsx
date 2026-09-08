@@ -3,14 +3,17 @@ import { Section } from '@/components/ui/Section'
 import { TextInput } from '@/components/ui/Field'
 import { PresetsPanel } from '@/components/panel/PresetsPanel'
 import { ContentSourcePanel } from '@/components/panel/ContentSourcePanel'
-import { AppearancePanel } from '@/components/panel/AppearancePanel'
+import { AppearancePanel, LayoutSection } from '@/components/panel/AppearancePanel'
 import { AnimationPanel } from '@/components/panel/AnimationPanel'
 import { SlidersHorizontal } from 'lucide-react'
+
+const DOUBLE_LAYOUTS = ['double', 'double-bold', 'double-abp']
 
 export function RightSidebar() {
   const selectedId = useStudioStore((s) => s.selectedId)
   const ticker = useStudioStore(selectTickerById(selectedId))
   const renameTicker = useStudioStore((s) => s.renameTicker)
+  const isDoubleLayout = ticker ? DOUBLE_LAYOUTS.includes(ticker.appearance.layout) : false
 
   return (
     <aside className="flex w-[300px] shrink-0 flex-col border-l border-studio-border bg-white">
@@ -35,17 +38,25 @@ export function RightSidebar() {
             <PresetsPanel ticker={ticker} />
           </Section>
 
+          <Section title="Layout" defaultOpen={false}>
+            <LayoutSection ticker={ticker} />
+          </Section>
+
           <Section title="Content Source">
             <ContentSourcePanel ticker={ticker} />
           </Section>
 
-          <Section title="Appearance" defaultOpen={false}>
-            <AppearancePanel ticker={ticker} />
-          </Section>
+          {!isDoubleLayout && (
+            <>
+              <Section title="Appearance" defaultOpen={false}>
+                <AppearancePanel ticker={ticker} />
+              </Section>
 
-          <Section title="Animation" defaultOpen={false}>
-            <AnimationPanel ticker={ticker} />
-          </Section>
+              <Section title="Animation" defaultOpen={false}>
+                <AnimationPanel ticker={ticker} />
+              </Section>
+            </>
+          )}
         </div>
       )}
     </aside>

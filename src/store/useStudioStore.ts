@@ -51,14 +51,26 @@ interface StudioState {
   updateCustomItem: (id: string, itemId: string, text: string) => void
   removeCustomItem: (id: string, itemId: string) => void
   reorderCustomItems: (id: string, fromIndex: number, toIndex: number) => void
+  addHeadlineItem: (id: string, text?: string) => void
+  updateHeadlineItem: (id: string, itemId: string, text: string) => void
+  removeHeadlineItem: (id: string, itemId: string) => void
+  reorderHeadlineItems: (id: string, fromIndex: number, toIndex: number) => void
+  setTopBadgeText: (id: string, text: string) => void
+  setBottomBadgeText: (id: string, text: string) => void
   setRssUrl: (id: string, url: string) => void
   fetchRss: (id: string) => Promise<void>
   setRssField: (id: string, field: keyof RssField, value: boolean) => void
+  setHeadlineContentSource: (id: string, source: ContentSourceType) => void
+  setHeadlineRssUrl: (id: string, url: string) => void
+  fetchHeadlineRss: (id: string) => Promise<void>
+  setHeadlineRssField: (id: string, field: keyof RssField, value: boolean) => void
 
   // presets & customization
   applyPreset: (id: string, preset: PresetId) => void
   updateAppearance: (id: string, patch: Partial<Appearance>) => void
   updateTypography: (id: string, patch: Partial<Typography>) => void
+  updateHeadlineTypography: (id: string, patch: Partial<Typography>) => void
+  resetHeadlineTypography: (id: string) => void
   updateAnimation: (id: string, patch: Partial<AnimationConfig>) => void
   renameTicker: (id: string, name: string) => void
 
@@ -207,6 +219,113 @@ export const useStudioStore = create<StudioState>((set, get) => ({
     }))
   },
 
+  addHeadlineItem: (id, text = 'New headline') => {
+    get().pushHistory()
+    set((s) => ({
+      tickers: s.tickers.map((t) =>
+        t.id === id ? touch({ ...t, headlineItems: [...t.headlineItems, { id: nanoid(6), text }] }) : t,
+      ),
+      saveState: 'unsaved',
+    }))
+  },
+
+  updateHeadlineItem: (id, itemId, text) => {
+    set((s) => ({
+      tickers: s.tickers.map((t) =>
+        t.id === id
+          ? touch({ ...t, headlineItems: t.headlineItems.map((i) => (i.id === itemId ? { ...i, text } : i)) })
+          : t,
+      ),
+      saveState: 'unsaved',
+    }))
+  },
+
+  removeHeadlineItem: (id, itemId) => {
+    get().pushHistory()
+    set((s) => ({
+      tickers: s.tickers.map((t) =>
+        t.id === id ? touch({ ...t, headlineItems: t.headlineItems.filter((i) => i.id !== itemId) }) : t,
+      ),
+      saveState: 'unsaved',
+    }))
+  },
+
+  reorderHeadlineItems: (id, fromIndex, toIndex) => {
+    set((s) => ({
+      tickers: s.tickers.map((t) => {
+        if (t.id !== id) return t
+        const items = [...t.headlineItems]
+        const [moved] = items.splice(fromIndex, 1)
+        items.splice(toIndex, 0, moved)
+        return touch({ ...t, headlineItems: items })
+      }),
+      saveState: 'unsaved',
+    }))
+  },
+
+  setHeadlineContentSource: (id, source) => {
+    get().pushHistory()
+    set((s) => ({
+      tickers: s.tickers.map((t) => {
+        if (t.id !== id) return t
+        const headlineRssFeed: RssFeedConfig | null =
+          source === 'rss'
+            ? (t.headlineRssFeed ?? { url: '', items: [], fields: { headline: true, source: true, date: false } })
+            : t.headlineRssFeed
+        return touch({ ...t, headlineContentSource: source, headlineRssFeed })
+      }),
+      saveState: 'unsaved',
+    }))
+  },
+
+  setHeadlineRssUrl: (id, url) => {
+    set((s) => ({
+      tickers: s.tickers.map((t) =>
+        t.id === id && t.headlineRssFeed ? touch({ ...t, headlineRssFeed: { ...t.headlineRssFeed, url } }) : t,
+      ),
+      saveState: 'unsaved',
+    }))
+  },
+
+  fetchHeadlineRss: async (id) => {
+    const t = get().tickers.find((x) => x.id === id)
+    if (!t?.headlineRssFeed?.url) return
+    const items = await fetchRssFeed(t.headlineRssFeed.url)
+    set((s) => ({
+      tickers: s.tickers.map((x) =>
+        x.id === id && x.headlineRssFeed
+          ? touch({ ...x, headlineRssFeed: { ...x.headlineRssFeed, items, lastFetchedAt: new Date().toISOString() } })
+          : x,
+      ),
+      saveState: 'unsaved',
+    }))
+  },
+
+  setHeadlineRssField: (id, field, value) => {
+    set((s) => ({
+      tickers: s.tickers.map((t) =>
+        t.id === id && t.headlineRssFeed
+          ? touch({ ...t, headlineRssFeed: { ...t.headlineRssFeed, fields: { ...t.headlineRssFeed.fields, [field]: value } } })
+          : t,
+      ),
+      saveState: 'unsaved',
+    }))
+  },
+
+  setTopBadgeText: (id, text) => {
+    set((s) => ({
+      tickers: s.tickers.map((t) => (t.id === id ? touch({ ...t, topBadgeText: text }) : t)),
+      saveState: 'unsaved',
+    }))
+  },
+
+  setBottomBadgeText: (id, text) => {
+    set((s) => ({
+      tickers: s.tickers.map((t) => (t.id === id ? touch({ ...t, bottomBadgeText: text }) : t)),
+      saveState: 'unsaved',
+    }))
+  },
+
   setRssUrl: (id, url) => {
     set((s) => ({
       tickers: s.tickers.map((t) =>
@@ -250,6 +369,7 @@ export const useStudioStore = create<StudioState>((set, get) => ({
           ? touch({
               ...t,
               preset,
+              name: def.label,
               appearance: { ...def.appearance },
               typography: { ...def.typography },
               animation: { ...def.animation },
@@ -275,6 +395,22 @@ export const useStudioStore = create<StudioState>((set, get) => ({
       tickers: s.tickers.map((t) =>
         t.id === id ? touch({ ...t, typography: { ...t.typography, ...patch } }) : t,
       ),
+      saveState: 'unsaved',
+    }))
+  },
+
+  updateHeadlineTypography: (id, patch) => {
+    set((s) => ({
+      tickers: s.tickers.map((t) =>
+        t.id === id ? touch({ ...t, headlineTypography: { ...t.headlineTypography, ...patch } }) : t,
+      ),
+      saveState: 'unsaved',
+    }))
+  },
+
+  resetHeadlineTypography: (id) => {
+    set((s) => ({
+      tickers: s.tickers.map((t) => (t.id === id ? touch({ ...t, headlineTypography: {} }) : t)),
       saveState: 'unsaved',
     }))
   },

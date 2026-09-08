@@ -1,4 +1,39 @@
+import { useState } from 'react'
+import { ChevronDown, Minus, Plus } from 'lucide-react'
 import type { ReactNode } from 'react'
+
+// A named sub-group that opens/closes — used to keep secondary controls
+// (badges, timing) out of the way until someone wants them, so the primary
+// content editor reads as the star of the section.
+export function Collapsible({
+  label,
+  icon,
+  defaultOpen = false,
+  children,
+}: {
+  label: string
+  icon?: ReactNode
+  defaultOpen?: boolean
+  children: ReactNode
+}) {
+  const [open, setOpen] = useState(defaultOpen)
+  return (
+    <div className="border-t border-studio-border/70 pt-2.5 first:border-t-0 first:pt-0">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center justify-between py-1 text-left"
+      >
+        <span className="flex items-center gap-1.5 text-[12px] font-medium text-studio-ink-soft">
+          {icon}
+          {label}
+        </span>
+        <ChevronDown size={14} className={`text-studio-muted transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && <div className="mt-2">{children}</div>}
+    </div>
+  )
+}
 
 export function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
   return (
@@ -111,6 +146,56 @@ export function Slider({
         {value}
         {suffix}
       </span>
+    </div>
+  )
+}
+
+// Numeric −/+ stepper with the value in the middle — clearer than a slider
+// for small ranges where the exact number matters (cycle seconds, font size,
+// letter spacing).
+export function Stepper({
+  value,
+  min,
+  max,
+  step = 1,
+  onChange,
+  suffix,
+}: {
+  value: number
+  min: number
+  max: number
+  step?: number
+  onChange: (v: number) => void
+  suffix?: string
+}) {
+  const decimals = step % 1 === 0 ? 0 : String(step).split('.')[1]?.length ?? 0
+  const clamp = (v: number) => Math.min(max, Math.max(min, Number(v.toFixed(decimals))))
+  const display = value.toFixed(decimals)
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <button
+        type="button"
+        onClick={() => onChange(clamp(value - step))}
+        disabled={value <= min}
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[5px] border border-studio-border bg-white text-studio-ink-soft transition-colors hover:border-studio-border-strong hover:text-studio-ink disabled:opacity-35"
+        aria-label="Decrease"
+      >
+        <Minus size={13} />
+      </button>
+      <div className="flex flex-1 items-center justify-center gap-0.5 rounded-[5px] border border-studio-border bg-white py-1">
+        <span className="font-mono text-[13px] text-studio-ink">{display}</span>
+        {suffix && <span className="font-mono text-[11px] text-studio-muted">{suffix}</span>}
+      </div>
+      <button
+        type="button"
+        onClick={() => onChange(clamp(value + step))}
+        disabled={value >= max}
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[5px] border border-studio-border bg-white text-studio-ink-soft transition-colors hover:border-studio-border-strong hover:text-studio-ink disabled:opacity-35"
+        aria-label="Increase"
+      >
+        <Plus size={13} />
+      </button>
     </div>
   )
 }
